@@ -1,3 +1,4 @@
+
 #ResQ: Empowering Disaster Response and Community Safety
 
 ResQ is a powerful and versatile emergency response application designed to enhance disaster management and community safety. Built with cutting-edge technologies, ResQ seamlessly connects rescue agencies and individuals during natural and man-made calamities, enabling rapid, well-coordinated responses when every second counts.
@@ -19,3 +20,4 @@ Contributing:
 Currently managed by the team.
 
 Let's work together to transform disaster response, one line of code at a time. Be a part of ResQ and help us create a safer world for everyone.
+
