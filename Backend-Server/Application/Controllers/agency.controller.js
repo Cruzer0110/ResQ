@@ -9,7 +9,7 @@ const Agency = db.agencies;
 exports.create = (req,res) => {
     //Validate request
     if(!req.body.name){
-        res.status(400).send({message: "Content cannot be empty!"});
+        res.status(400).send({message: "Enter a value in \"Name\" field!"});
         return;
     };
 
@@ -39,30 +39,97 @@ exports.create = (req,res) => {
                 message:
                 err.message || "Some error occured while creating the Agency."
             });
-        }
-    );
+        });
 };
+
+
 // Retrieve all Agencies from the database
 exports.getAll = (req,res) => {
 
 };
+
+
 // Find an Agency with the given ID
 exports.getOne = (req,res) => {
 
 };
+
+
 // Update an Agency by the ID in the request
 exports.update = (req,res) => {
+    if (!req.body) {
+        return res.status(400)
+            .send({
+                message: "Empty data to update!"
+            });
+    }
 
+    const id = req.params.id;
+
+    Agency.findByIdAndUpdate(id,req.body,{ useFindAndModify: false})
+        .then(data => {
+            
+        })
 };
+
+
 // Delete an Agency with the specified ID in the request
 exports.delete = (req,res) => {
+    const id = req.params.id;
 
+    Agency.findByIdAndRemove(id)
+        .then(data => {
+            if (!data) {
+                res.status(404)
+                    .send({
+                        message: `Cannot delete Agency with id = ${id}. Agency was not found!`
+                    });
+            }
+            else {
+                res.send({
+                    message: "Agency was successfully deleted!"
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500)
+                .send({
+                    message: err.message || "Could not delete agency with id = "+id
+                });
+        });
 };
+
+
 // Purge database
 exports.deleteAll = (req,res) => {
-
+    Agency.deleteMany({})
+        .then(data => {
+            res.send({
+                message: `${data.deletedCount} agencies were deleted successfully!`
+            });
+        })
+        .catch(err => {
+            res.status(500)
+                .send({
+                    message: err.message || "Some error occured while removing all agencies."
+                });
+        });
 };
+
+
 // Find all Agencies with the given type
 exports.findType = (req,res) => {
+    const type = req.params.type;
+    let condition = type ? { type: { $regex: new RegExp(type), $options: "i" } } : {};
 
+    Agency.find(condition)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500)
+                .send({
+                    message: err.message || "Some error occured while retrieving Agencies."
+                });
+        });
 };
