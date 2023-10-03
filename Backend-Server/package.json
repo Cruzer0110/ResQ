@@ -1,0 +1,27 @@
+{
+  "name": "resq",
+  "version": "0.1.1",
+  "description": "Basic server of ResQ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --watch server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cruzer0110/ResQ.git"
+  },
+  "keywords": [
+    "ResQ"
+  ],
+  "author": "Archishman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cruzer0110/ResQ/issues"
+  },
+  "homepage": "https://github.com/Cruzer0110/ResQ#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.3"
+  }
+}
