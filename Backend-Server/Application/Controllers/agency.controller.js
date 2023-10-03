@@ -43,15 +43,52 @@ exports.create = (req,res) => {
 };
 
 
+
+
 // Retrieve all Agencies from the database
 exports.getAll = (req,res) => {
-
+    let condition = {};
+    
+    Agency.find(!condition)
+    .then(data => {
+        res.send(data);
+    })
+    .catch(err => {
+        res.status(500)
+        .send({
+            message: err.message || "Some error occured while retrieving Agencies."
+        });
+    });
 };
 
+// Retrieve all Agencies from the database in the given location
+exports.getAllByLocation = (req,res) => {
+    /* 
+        Code for this method yet to be written
+        Currently, the way filter out location is not known...
+        
+    */
+};
 
 // Find an Agency with the given ID
 exports.getOne = (req,res) => {
+    const id = req.params.id;
 
+    Agency.findById(id)
+        .then(data => {
+            if (!data)
+                res.status(404)
+                    .send({
+                        message: "Agency with id = "+id+" not found!"
+                    });
+            else res.send(data);
+        })
+        .catch(err => {
+            res.status(500)
+                .send({
+                    message: err.message || "Error retrieving Agency with id = "+id
+                });
+        });
 };
 
 
@@ -68,8 +105,24 @@ exports.update = (req,res) => {
 
     Agency.findByIdAndUpdate(id,req.body,{ useFindAndModify: false})
         .then(data => {
-            
+            if (!data) {
+                res.status(404)
+                    .send({
+                        message: `Cannot update Agency with id = ${id}. Agency was not found!`
+                    });
+            }
+            else {
+                res.send({
+                    message: "Agency was successfully updated!"
+                });
+            }
         })
+        .catch(err => {
+            res.status(500)
+                .send({
+                    message: err.message || "Error updating Agency with id = "+id
+                });
+        });
 };
 
 
