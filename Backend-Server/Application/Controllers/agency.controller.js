@@ -9,7 +9,7 @@ const Agency = db.agencies;
 exports.create = (req,res) => {
     //Validate request
     if(!req.body.name){
-        res.status(400).send({message: "Enter a value in \"Name\" field!"});
+        res.status(400).send({message: 'Enter a value in "Name" field!'});
         return;
     };
 

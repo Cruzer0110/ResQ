@@ -13,7 +13,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({
+    extended: true
+}));
 
 //connecting to database
 const db = require("./Application/DB_Models");
@@ -36,7 +38,8 @@ app.get('/',(req,res) => {
 });
 
 //Agency routes
-require("./Application/Routes/agency.routes")(app);
+const routes = require("./Application/Routes/agency.routes.js");
+routes(app);
 
 //setting port
 const PORT = process.env.PORT || 8080;
