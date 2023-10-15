@@ -1,3 +1,12 @@
+/**
+ * This is the entry point of the backend server of ResQ.
+ * This file is responsible for connecting to the database and starting the server.
+ * It collects the routes, database elements and other important resources from different locations and combines them to form the backend server.
+ * It also sets the port on which the server will be running.
+ * 
+ * Author: Cruzer0110
+ * Version: 0.1.1
+ */
 const express = require('express');
 const cors = require('cors');
 
@@ -28,7 +37,7 @@ db.mongoose
         console.log("Connected to database!");
     })
     .catch(err => {
-        console.log("Cannot connect to database! ", err);
+        console.log("Cannot connect to database!", err);
         process.exit();
     });
 
@@ -40,6 +49,7 @@ app.get('/',(req,res) => {
 //Agency routes
 const routes = require("./Application/Routes/agency.routes.js");
 routes(app);
+
 
 //setting port
 const PORT = process.env.PORT || 8080;
