@@ -41,7 +41,7 @@ db.mongoose
         process.exit();
     });
 
-//route
+//Main route
 app.get('/',(req,res) => {
     res.json({message: "Welcome to the backend server"});
 });
@@ -50,6 +50,10 @@ app.get('/',(req,res) => {
 const routes = require("./Application/Routes/agency.routes.js");
 routes(app);
 
+// Invalid route
+app.use((req, res) => {
+    res.status(404).send({ message: "Invalid route request!" });
+});
 
 //setting port
 const PORT = process.env.PORT || 8080;

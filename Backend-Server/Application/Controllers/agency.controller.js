@@ -10,7 +10,6 @@ exports.create = (req, res) => {
     //Validate request
     if (!req.body.name) {
         res.status(400).send({ 
-            name: "Empty Name",
             message: 'Enter a value in "Name" field!' 
         });
         return;
@@ -82,7 +81,7 @@ exports.getOne = (req, res) => {
                     .send({
                         message: "Agency with id = " + id + " not found!"
                     });
-            else res.send(data);
+            else res.status(200).send(data);
         })
         .catch(err => {
             res.status(500)
