@@ -6,10 +6,12 @@ const db = require("../DB_Models");
 const Agency = db.agencies;
 
 // Create and Save a new Agency
-exports.create = (req,res) => {
+exports.create = (req, res) => {
     //Validate request
-    if(!req.body.name){
-        res.status(400).send({message: "Enter a value in \"Name\" field!"});
+    if (!req.body.name) {
+        res.status(400).send({ 
+            message: 'Enter a value in "Name" field!' 
+        });
         return;
     };
 
@@ -37,32 +39,30 @@ exports.create = (req,res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                err.message || "Some error occured while creating the Agency."
+                    err.message || "Some error occured while creating the Agency."
             });
         });
 };
 
 
-
-
 // Retrieve all Agencies from the database
-exports.getAll = (req,res) => {
+exports.getAll = (req, res) => {
     let condition = {};
-    
-    Agency.find(!condition)
-    .then(data => {
-        res.send(data);
-    })
-    .catch(err => {
-        res.status(500)
-        .send({
-            message: err.message || "Some error occured while retrieving Agencies."
+
+    Agency.find(condition)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500)
+                .send({
+                    message: err.message || "Some error occured while retrieving Agencies."
+                });
         });
-    });
 };
 
 // Retrieve all Agencies from the database in the given location
-exports.getAllByLocation = (req,res) => {
+exports.getAllByLocation = (req, res) => {
     /* 
         Code for this method yet to be written
         Currently, the way filter out location is not known...
@@ -71,7 +71,7 @@ exports.getAllByLocation = (req,res) => {
 };
 
 // Find an Agency with the given ID
-exports.getOne = (req,res) => {
+exports.getOne = (req, res) => {
     const id = req.params.id;
 
     Agency.findById(id)
@@ -79,21 +79,21 @@ exports.getOne = (req,res) => {
             if (!data)
                 res.status(404)
                     .send({
-                        message: "Agency with id = "+id+" not found!"
+                        message: "Agency with id = " + id + " not found!"
                     });
-            else res.send(data);
+            else res.status(200).send(data);
         })
         .catch(err => {
             res.status(500)
                 .send({
-                    message: err.message || "Error retrieving Agency with id = "+id
+                    message: err.message || "Error retrieving Agency with id = " + id
                 });
         });
 };
 
 
 // Update an Agency by the ID in the request
-exports.update = (req,res) => {
+exports.update = (req, res) => {
     if (!req.body) {
         return res.status(400)
             .send({
@@ -103,7 +103,7 @@ exports.update = (req,res) => {
 
     const id = req.params.id;
 
-    Agency.findByIdAndUpdate(id,req.body,{ useFindAndModify: false})
+    Agency.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
         .then(data => {
             if (!data) {
                 res.status(404)
@@ -120,14 +120,14 @@ exports.update = (req,res) => {
         .catch(err => {
             res.status(500)
                 .send({
-                    message: err.message || "Error updating Agency with id = "+id
+                    message: err.message || "Error updating Agency with id = " + id
                 });
         });
 };
 
 
 // Delete an Agency with the specified ID in the request
-exports.delete = (req,res) => {
+exports.delete = (req, res) => {
     const id = req.params.id;
 
     Agency.findByIdAndRemove(id)
@@ -147,14 +147,14 @@ exports.delete = (req,res) => {
         .catch(err => {
             res.status(500)
                 .send({
-                    message: err.message || "Could not delete agency with id = "+id
+                    message: err.message || "Could not delete agency with id = " + id
                 });
         });
 };
 
 
 // Purge database
-exports.deleteAll = (req,res) => {
+exports.deleteAll = (req, res) => {
     Agency.deleteMany({})
         .then(data => {
             res.send({
@@ -171,7 +171,7 @@ exports.deleteAll = (req,res) => {
 
 
 // Find all Agencies with the given type
-exports.findType = (req,res) => {
+exports.findType = (req, res) => {
     const type = req.params.type;
     let condition = type ? { type: { $regex: new RegExp(type), $options: "i" } } : {};
 

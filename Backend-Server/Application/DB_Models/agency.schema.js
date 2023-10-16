@@ -1,35 +1,66 @@
 // Used for creating the schema for the agency collection in the database
-
 const { Decimal128 } = require("mongodb");
+const mongoose = require("mongoose");
 
 //Create mongoose model for database
-module.exports = mongoose => {
-    let schema = mongoose.Schema(
-        {
-            name: String,
+let agency = mongoose.Schema(
+    {
+        name: {
             type: String,
-            contact: Number,
-            expertise: String,
-            address: {
-                street: String,
-                city: String,
-                state: String,
-                pin: Number
+            required: true,
+            unique: true
+        },
+        type: {
+            type: String,
+            required: true
+        },
+        contact: {
+            type: String,
+            required: true,
+            unique: true
+        },
+        expertise: {
+            type: String,
+            required: false
+        },
+        address: {
+            street: {
+                type: String,
+                required: true
             },
-            location: {
-                latitude: Decimal128,
-                longitude: Decimal128,
+            city: {
+                type: String,
+                required: true
+            },
+            state: {
+                type: String,
+                required: true
+            },
+            pin: {
+                type: String,
+                required: true
             }
         },
-        { timestamps: true }
-    );
+        location: {
+            latitude: {
+                type: Decimal128,
+                required: false
+            },
+            longitude: {
+                type: Decimal128,
+                required: false
+            },
+        }
+    },
+    { timestamps: true }
+);
 
-    schema.method("toJSON", function () {
-        const { __v, _id, ...object } = this.toObject();
-        object.id = _id;
-        return object;
-    });
-    
-    const Agency = mongoose.model("agency", schema);
-    return Agency;
-};
+agency.method("toJSON", function () {
+    const { __v, _id, ...object } = this.toObject();
+    object.id = _id;
+    return object;
+});
+
+const Agency = mongoose.model("agency", agency);
+
+module.exports = Agency;
