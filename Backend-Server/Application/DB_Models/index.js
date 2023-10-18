@@ -7,6 +7,5 @@ const db = {};
 db.mongoose = mongoose;
 db.url = dbConfig.url;
 db.agencies = require("./agency.schema.js");
-db.agencies(mongoose);
 
 module.exports = db;
