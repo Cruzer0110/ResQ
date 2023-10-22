@@ -5,7 +5,6 @@
  *  It also sets the port on which the server will be running.
  *  
  *  Author: Cruzer0110
- *  Version: 0.2.0
 */
 const express = require('express');
 const cors = require('cors');
@@ -37,7 +36,7 @@ db.mongoose
         console.log("Connected to database!");
     })
     .catch(err => {
-        console.log("Cannot connect to database!", err);
+        console.log("Cannot connect to database!\n", err);
         process.exit();
     });
 
