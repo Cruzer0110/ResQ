@@ -1,3 +1,6 @@
+require("dotenv").config({
+    path: `${__dirname}/../Server_Config/.env`
+});
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../DB_Models");
@@ -87,7 +90,7 @@ exports.signin = (req, res) => {
             }
             else {
                 // Compare password with the stored password
-                bcrypt.compare(password, data.password, (err, same) => {
+                bcrypt.compare(password, data[0].password, (err, same) => {
                     if (err) {
                         return res.status(500).send({
                             message: err.message || "Internal server error occured! Please try again later."
@@ -103,13 +106,14 @@ exports.signin = (req, res) => {
                         jwt
                             .sign(
                                 {
-                                    id: data.id,
-                                    role: data.role,
-                                    agency: data.agency
+                                    id: data[0].id,
+                                    role: data[0].role,
+                                    agency: data[0].agency
                                 },
                                 process.env.JWT_SECRET,
                                 {
-                                    expiresIn: "8h"
+                                    expiresIn: `${process.env.JWT_EXPIRES_IN}d`,
+                                    algorithm: "HS256"
                                 },
                                 (err, token) => {
                                     if (err) {
