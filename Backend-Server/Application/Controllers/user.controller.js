@@ -12,7 +12,7 @@ exports.signup = (req, res) => {
             message: "Required fields cannot be empty!"
         });
     }
-    else if (!(req.body.password===req.body.confirmPassword)) {
+    else if (!(req.body.password === req.body.confirmPassword)) {
         return res.status(401).send({
             message: "Passwords do not match!"
         });
@@ -20,46 +20,44 @@ exports.signup = (req, res) => {
 
     //Hash the password
     const saltRounds = 10;
-    const hashedPassword = bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+    bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
         if (err) {
-            res.status(500).send({
+            return res.status(500).send({
                 message: err.message || "Internal server error occured! Please try again later."
             });
-            return;
         }
         else {
-            return hash;
+            //Create a User
+            const user = new User({
+                name: req.body.name,
+                contact: req.body.contact,
+                password: hash,
+                email: req.body.email,
+                address: {
+                    street: req.body.address.street,
+                    city: req.body.address.city,
+                    state: req.body.address.state,
+                    pin: req.body.address.pin
+                },
+                role: req.body.role,
+                agency: req.body.agency
+            });
+
+            //Save User in the database
+            user
+                .save(user)
+                .then(data => {
+                    res.send(data);
+                })
+                .catch(err => {
+                    res.status(500)
+                        .send({
+                            message: err.message || "Internal server error occured! Please try again later."
+                        });
+                });
+            return;
         }
     });
-
-    //Create a User
-    const user = new User({
-        name: req.body.name,
-        contact: req.body.contact,
-        password: hashedPassword,
-        email: req.body.email,
-        address: {
-            street: req.body.address.street,
-            city: req.body.address.city,
-            state: req.body.address.state,
-            pin: req.body.address.pin
-        },
-        role: req.body.role,
-        agency: req.body.agency
-    });
-
-    //Save User in the database
-    user
-        .save(user)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500)
-                .send({
-                    message: "Internal server error occured! Please try again later."
-                });
-        });
 };
 
 //Sign in an existing user and return a JWT token corresponding to their role
