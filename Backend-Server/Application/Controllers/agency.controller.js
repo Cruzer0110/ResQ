@@ -38,8 +38,7 @@ exports.create = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occured while creating the Agency."
+                message: err.message || "Some error occured while creating the Agency."
             });
         });
 };

@@ -1,12 +1,13 @@
-const dbConfig = require("../Server_Config/config.js");
-
+require('dotenv').config({
+    path: `${__dirname}/../Server_Config/.env`
+});
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
 const db = {};
 db.mongoose = mongoose;
-db.url = dbConfig.url;
+db.url = process.env.MONGO_URI;
 db.agencies = require("./agency.schema.js");
-db.agencies(mongoose);
+db.users = require("./user.schema.js");
 
 module.exports = db;

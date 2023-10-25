@@ -3,7 +3,7 @@ const { Decimal128 } = require("mongodb");
 const mongoose = require("mongoose");
 
 //Create mongoose model for database
-let agency = mongoose.Schema(
+const agencySchema = mongoose.Schema(
     {
         name: {
             type: String,
@@ -55,12 +55,12 @@ let agency = mongoose.Schema(
     { timestamps: true }
 );
 
-agency.method("toJSON", function () {
+agencySchema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;
 });
 
-const Agency = mongoose.model("agency", agency);
+const Agency = mongoose.model("agency", agencySchema);
 
 module.exports = Agency;
