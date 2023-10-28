@@ -38,19 +38,20 @@ const agencySchema = mongoose.Schema(
                 required: true
             },
             pin: {
-                type: String,
+                type: Number,
                 required: true
             }
         },
         location: {
-            latitude: {
-                type: Decimal128,
-                required: false
+            type: {
+                type: String,
+                enum: ["Point"],
+                required: true
             },
-            longitude: {
-                type: Decimal128,
-                required: false
-            },
+            coordinates: {
+                type: [Decimal128],
+                required: true
+            }
         }
     },
     { timestamps: true }

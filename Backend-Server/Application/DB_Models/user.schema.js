@@ -42,16 +42,6 @@ const userSchema = mongoose.Schema(
                 required: false
             }
         },
-        location: {
-            latitude: {
-                type: String,
-                required: false
-            },
-            longitude: {
-                type: String,
-                required: false
-            },
-        },
         role: {
             type: String,
             enum: ['user', 'admin', 'agency'],
@@ -60,6 +50,17 @@ const userSchema = mongoose.Schema(
         agency: {
             type: String,
             required: () => this.role === 'agency'
+        },
+        location: {
+            type: {
+                type: String,
+                enum: ["Point"],
+                required: true
+            },
+            coordinates: {
+                type: [Decimal128],
+                required: true
+            }
         }
     },
     { timestamps: true }
