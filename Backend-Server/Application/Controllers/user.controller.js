@@ -108,7 +108,7 @@ exports.signin = (req, res) => {
                                 {
                                     id: data[0].id,
                                     role: data[0].role,
-                                    agency: data[0].agency
+                                    agency: (data[0].role=='agency')?data[0].agency:null
                                 },
                                 process.env.JWT_SECRET,
                                 {
