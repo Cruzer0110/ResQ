@@ -1,25 +1,27 @@
+// Used for creating the schema for the user collection in the database
 const mongoose = require('mongoose');
+const Decimal128 = mongoose.Types.Decimal128;
 
 const userSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: true,
+            required: [true, "Name is required"],
             unique: false
         },
         email: {
             type: String,
-            required: false,
+            required: [true, "Unique email id is required"],
             unique: true
         },
         contact: {
             type: Number,
-            required: true,
+            required: [true, "Unique phone number is required"],
             unique: true
         },
         password: {
             type: String,
-            required: true,
+            required: [true, "Password is required"],
             unique: false
         },
         address: {
@@ -52,11 +54,12 @@ const userSchema = mongoose.Schema(
         },
         role: {
             type: String,
+            enum: ['user', 'admin', 'agency'],
             required: true
         },
         agency: {
             type: String,
-            required: false
+            required: () => this.role === 'agency'
         }
     },
     { timestamps: true }

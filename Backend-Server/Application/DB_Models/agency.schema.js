@@ -1,6 +1,6 @@
 // Used for creating the schema for the agency collection in the database
-const { Decimal128 } = require("mongodb");
 const mongoose = require("mongoose");
+const Decimal128 = mongoose.Types.Decimal128;
 
 //Create mongoose model for database
 const agencySchema = mongoose.Schema(
@@ -12,16 +12,17 @@ const agencySchema = mongoose.Schema(
         },
         type: {
             type: String,
+            enum: ['Fire', 'Police', 'Medical', 'Other'],
             required: true
         },
         contact: {
-            type: String,
+            type: Number,
             required: true,
             unique: true
         },
         expertise: {
             type: String,
-            required: false
+            required: () => this.type === 'Medical'
         },
         address: {
             street: {
