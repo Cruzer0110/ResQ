@@ -1,6 +1,5 @@
 // Used for creating the schema for the agency collection in the database
 const mongoose = require("mongoose");
-const Decimal128 = mongoose.Types.Decimal128;
 
 //Create mongoose model for database
 const agencySchema = mongoose.Schema(
@@ -41,23 +40,12 @@ const agencySchema = mongoose.Schema(
                 type: Number,
                 required: true
             }
-        },
-        location: {
-            type: {
-                type: String,
-                enum: ["Point"],
-                required: true
-            },
-            coordinates: {
-                type: [Decimal128],
-                required: true
-            }
         }
     },
     { timestamps: true }
 );
 
-agencySchema.method("toJSON", function () {
+agencySchema.method("toJSON", () => {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;

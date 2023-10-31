@@ -1,6 +1,5 @@
 // Used for creating the schema for the user collection in the database
 const mongoose = require('mongoose');
-const Decimal128 = mongoose.Types.Decimal128;
 
 const userSchema = mongoose.Schema(
     {
@@ -50,23 +49,12 @@ const userSchema = mongoose.Schema(
         agency: {
             type: String,
             required: () => this.role === 'agency'
-        },
-        location: {
-            type: {
-                type: String,
-                enum: ["Point"],
-                required: true
-            },
-            coordinates: {
-                type: [Decimal128],
-                required: true
-            }
         }
     },
     { timestamps: true }
 );
 
-userSchema.method("toJSON", function () {
+userSchema.method("toJSON", () => {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;
