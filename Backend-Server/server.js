@@ -6,6 +6,9 @@
  *  
  *  Author: Cruzer0110
 */
+require('dotenv').config({
+    path: `${__dirname}/Application/Server_Config/.env`
+});
 const express = require('express');
 const cors = require('cors');
 
@@ -34,8 +37,7 @@ db.mongoose
     })
     .then(() => {
         console.log("Connected to database!");
-    })
-    .catch(err => {
+    }, err => {
         console.log("Cannot connect to database!\n", err);
         process.exit();
     });
@@ -46,7 +48,7 @@ app.get('/',(req,res) => {
 });
 
 //Api routes
-const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js")];
+const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js"),require("./Application/Routes/locationLog.routes.js")];
 
 routes.forEach(element => {
     element(app);
