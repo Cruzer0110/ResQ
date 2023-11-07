@@ -6,8 +6,16 @@
  *  
  *  Author: Cruzer0110
 */
+require('dotenv').config({
+    path: `${__dirname}/Application/Server_Config/.env`
+});
 const express = require('express');
 const cors = require('cors');
+const { initializeApp } = require("firebase-admin");
+
+const firebaseApp = initializeApp({
+    credential: admin.credential.cert(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+});
 
 const app = express();
 
@@ -34,19 +42,18 @@ db.mongoose
     })
     .then(() => {
         console.log("Connected to database!");
-    })
-    .catch(err => {
+    }, err => {
         console.log("Cannot connect to database!\n", err);
         process.exit();
     });
 
 //Main route
-app.get('/',(req,res) => {
-    res.json({message: "Welcome to the backend server"});
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to the backend server" });
 });
 
 //Api routes
-const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js")];
+const routes = [require("./Application/Routes/agency.routes.js"), require("./Application/Routes/user.routes.js")];
 
 routes.forEach(element => {
     element(app);
