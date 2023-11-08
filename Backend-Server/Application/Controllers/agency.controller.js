@@ -27,7 +27,10 @@ exports.create = (req, res) => {
             state: req.body.address.state,
             pin: req.body.address.pin
         },
-        //Fetch location from Google Maps API
+        location: {
+            type: req.body.location.type,
+            coordinates: req.body.location.coordinates
+        }
     });
 
     //Save Agency in the database

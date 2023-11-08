@@ -40,6 +40,17 @@ const agencySchema = mongoose.Schema(
                 type: Number,
                 required: true
             }
+        },
+        location: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                required: true
+            },
+            coordinates: {
+                type: [Number],
+                required: true
+            }
         }
     },
     { timestamps: true }
