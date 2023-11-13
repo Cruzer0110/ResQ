@@ -11,8 +11,10 @@ require('dotenv').config({
 });
 const express = require('express');
 const cors = require('cors');
+const socketIO = require('socket.io');
 
 const app = express();
+const io = socketIO(app);
 
 var corsOptions = {
     origin: 'http://localhost:8081'
@@ -58,6 +60,22 @@ routes.forEach(element => {
 app.use((req, res) => {
     res.status(404).send({ message: "Invalid route request!" });
 });
+
+
+//socket.io
+io.on('connection', socket => {
+    socket.on('updateLocation', (data,room) => {
+        app.post('/api/locationLog', data);
+        if (room == '') {
+            socket.broadcast.emit('newLocation', data);
+        } else {
+            socket.to(room).emit('newLocation', data);
+        }
+    })
+    socket.on('joinRoom', room => {
+        socket.join(room);
+    })
+})
 
 //setting port
 const PORT = process.env.PORT || 8080;
