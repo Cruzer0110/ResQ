@@ -11,11 +11,6 @@ require('dotenv').config({
 });
 const express = require('express');
 const cors = require('cors');
-const { initializeApp } = require("firebase-admin");
-
-const firebaseApp = initializeApp({
-    credential: admin.credential.cert(process.env.GOOGLE_APPLICATION_CREDENTIALS)
-});
 
 const app = express();
 
