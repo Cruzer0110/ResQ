@@ -3,4 +3,4 @@
 .env.test
 
 # Firebase Service Account Key
-./Backend-Server/Application/Server_Config/serviceaccountkey.json
+serviceaccountkey.json
