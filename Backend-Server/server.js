@@ -11,6 +11,8 @@ require('dotenv').config({
 });
 const express = require('express');
 const cors = require('cors');
+const db = require("./Application/DB_Models");
+const middleware = require("./Application/Middleware/middleware.js");
 
 const app = express();
 
@@ -28,8 +30,10 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+//middleware
+// app.use(middleware.decodeToken);
+
 //connecting to database
-const db = require("./Application/DB_Models");
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
