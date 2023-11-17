@@ -9,12 +9,17 @@
 require('dotenv').config({
     path: `${__dirname}/Application/Server_Config/.env`
 });
+require('dotenv').config({
+    path: `${__dirname}/Application/Server_Config/.env`
+});
 const express = require('express');
 const cors = require('cors');
+const socketIO = require('socket.io');
 const db = require("./Application/DB_Models");
 const middleware = require("./Application/Middleware/middleware.js");
 
 const app = express();
+const io = socketIO(app);
 
 var corsOptions = {
     origin: 'http://localhost:8081'
@@ -52,7 +57,7 @@ app.get('/', (req, res) => {
 });
 
 //Api routes
-const routes = [require("./Application/Routes/agency.routes.js"), require("./Application/Routes/user.routes.js")];
+const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js"),require("./Application/Routes/locationLog.routes.js")];
 
 routes.forEach(element => {
     element(app);
@@ -62,6 +67,22 @@ routes.forEach(element => {
 app.use((req, res) => {
     res.status(404).send({ message: "Invalid route request!" });
 });
+
+
+//socket.io
+io.on('connection', socket => {
+    socket.on('updateLocation', (data,room) => {
+        app.post('/api/locationLog', data);
+        if (room == '') {
+            socket.broadcast.emit('newLocation', data);
+        } else {
+            socket.to(room).emit('newLocation', data);
+        }
+    })
+    socket.on('joinRoom', room => {
+        socket.join(room);
+    })
+})
 
 //setting port
 const PORT = process.env.PORT || 8080;

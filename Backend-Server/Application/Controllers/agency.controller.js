@@ -25,6 +25,10 @@ exports.create = (req, res) => {
             city: req.body.address.city,
             state: req.body.address.state,
             pin: req.body.address.pin
+        },
+        location: {
+            type: req.body.location.type,
+            coordinates: req.body.location.coordinates
         }
     });
 

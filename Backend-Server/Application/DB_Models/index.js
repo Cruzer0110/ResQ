@@ -9,5 +9,6 @@ db.mongoose = mongoose;
 db.url = process.env.MONGO_URI;
 db.agencies = require("./agency.schema.js");
 db.users = require("./user.schema.js");
+db.locationLogs = require("./locationLog.schema.js");
 
 module.exports = db;
