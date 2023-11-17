@@ -6,8 +6,13 @@
  *  
  *  Author: Cruzer0110
 */
+require('dotenv').config({
+    path: `${__dirname}/Application/Server_Config/.env`
+});
 const express = require('express');
 const cors = require('cors');
+const db = require("./Application/DB_Models");
+const middleware = require("./Application/Middleware/middleware.js");
 
 const app = express();
 
@@ -25,8 +30,10 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+//middleware
+// app.use(middleware.decodeToken);
+
 //connecting to database
-const db = require("./Application/DB_Models");
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
@@ -34,19 +41,18 @@ db.mongoose
     })
     .then(() => {
         console.log("Connected to database!");
-    })
-    .catch(err => {
+    }, err => {
         console.log("Cannot connect to database!\n", err);
         process.exit();
     });
 
 //Main route
-app.get('/',(req,res) => {
-    res.json({message: "Welcome to the backend server"});
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to the backend server" });
 });
 
 //Api routes
-const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js")];
+const routes = [require("./Application/Routes/agency.routes.js"), require("./Application/Routes/user.routes.js")];
 
 routes.forEach(element => {
     element(app);

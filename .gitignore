@@ -1,3 +1,6 @@
 # dotenv environment variables file
 .env
 .env.test
+
+# Firebase Service Account Key
+serviceaccountkey.json
