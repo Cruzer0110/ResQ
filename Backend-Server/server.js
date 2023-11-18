@@ -19,7 +19,6 @@ const db = require("./Application/DB_Models");
 const middleware = require("./Application/Middleware/middleware.js");
 
 const app = express();
-const io = socketIO(app);
 
 var corsOptions = {
     origin: 'http://localhost:8081'
@@ -69,7 +68,16 @@ app.use((req, res) => {
 });
 
 
+//setting port
+const PORT = process.env.PORT || 8080;
+
+const server = app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 //socket.io
+const io = socketIO(server);
+
 io.on('connection', socket => {
     socket.on('updateLocation', (data,room) => {
         app.post('/api/locationLog', data);
@@ -78,15 +86,8 @@ io.on('connection', socket => {
         } else {
             socket.to(room).emit('newLocation', data);
         }
-    })
+    });
     socket.on('joinRoom', room => {
         socket.join(room);
-    })
-})
-
-//setting port
-const PORT = process.env.PORT || 8080;
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    });
 });
