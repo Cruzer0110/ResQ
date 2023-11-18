@@ -22,7 +22,7 @@ module.exports = app => {
     router.put("/:id", locationLog.update);
 
     // Delete logs of user with id
-    router.delete("/:id", locationLog.delete);
+    router.delete("/:id", locationLog.deleteAll);
 
     // Filter logs by date and time range
     router.get("/filter/:id/:date/:time1/:time2", locationLog.filterByDateTimeRange);
