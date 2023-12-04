@@ -9,10 +9,9 @@
 require('dotenv').config({
     path: `${__dirname}/Application/Server_Config/.env`
 });
-require('dotenv').config({
-    path: `${__dirname}/Application/Server_Config/.env`
-});
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const cors = require('cors');
 const socketIO = require('socket.io');
 const db = require("./Application/DB_Models");
@@ -34,10 +33,10 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-//middleware
+// Middleware to verify client token for all requests
 // app.use(middleware.decodeToken);
 
-//connecting to database
+// Connecting to database
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
@@ -56,7 +55,7 @@ app.get('/', (req, res) => {
 });
 
 //Api routes
-const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js"),require("./Application/Routes/locationLog.routes.js")];
+const routes = [require("./Application/Routes/agency.routes.js"), require("./Application/Routes/user.routes.js"), require("./Application/Routes/locationLog.routes.js")];
 
 routes.forEach(element => {
     element(app);
@@ -67,10 +66,17 @@ app.use((req, res) => {
     res.status(404).send({ message: "Invalid route request!" });
 });
 
+//setting up ssl
+const cred = {
+    key: fs.readFileSync(process.env.SSL_KEY_PATH),
+    cert: fs.readFileSync(process.env.SSL_CERT_PATH)
+};
 
 //setting port
 const PORT = process.env.PORT || 8080;
 
+// Starting the server
+// const server = https(cred,app).listen(PORT, () => {
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
@@ -79,7 +85,7 @@ const server = app.listen(PORT, () => {
 const io = socketIO(server);
 
 io.on('connection', socket => {
-    socket.on('updateLocation', (data,room) => {
+    socket.on('updateLocation', (data, room) => {
         app.post('/api/locationLog', data);
         if (room == '') {
             socket.broadcast.emit('newLocation', data);
