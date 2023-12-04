@@ -85,15 +85,25 @@ const server = app.listen(PORT, () => {
 const io = socketIO(server);
 
 io.on('connection', socket => {
-    socket.on('updateLocation', (data, room) => {
-        app.post('/api/locationLog', data);
+    socket.on('updateLocation', (locationData, room) => {
+        app.post('/api/locationLog', locationData);
         if (room == '') {
-            socket.broadcast.emit('newLocation', data);
+            socket.broadcast.emit('newLocation', locationData);
         } else {
-            socket.to(room).emit('newLocation', data);
+            socket.to(room).emit('newLocation', locationData);
         }
     });
     socket.on('joinRoom', room => {
         socket.join(room);
     });
+    socket.on('leaveRoom', room => {
+        socket.leave(room);
+    });
+    socket.on('disconnect', (lastLocationData) => {
+        socket.leaveAll();
+        app.post('/api/locationLog', lastLocationData);
+    });
+    socket.on(error => {
+        console.log(error);
+    })
 });
