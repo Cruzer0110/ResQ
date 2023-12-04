@@ -34,7 +34,7 @@ app.use(express.urlencoded({
 }));
 
 // Middleware to verify client token for all requests
-// app.use(middleware.decodeToken);
+app.use(middleware.decodeToken);
 
 // Connecting to database
 db.mongoose

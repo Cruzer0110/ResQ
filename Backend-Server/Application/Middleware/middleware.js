@@ -6,15 +6,14 @@ class Middleware {
         admin
             .auth().verifyIdToken(token)
             .then(decodeValue => {
-                if (decodeValue) {
-                    console.log(decodeValue);
-                    return next();
-                } else {
-                    return res.status(401).send({
-                        message: 'Invalid token'
-                    });
-                }
-            }, err => {
+                return next();
+            }, invalidToken => {
+                return res.status(401).send({
+                    message: 'Invalid token',
+                    token: token
+                });
+            })
+            .catch(error => {
                 res.status(500).send({
                     message: 'Server error. Please try again later.'
                 });
