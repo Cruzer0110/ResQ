@@ -1,11 +1,11 @@
 {
 	"name": "resq",
-	"version": "0.4.2",
-	"description": "Basic server of ResQ",
+	"version": "0.4.3",
+	"description": "Backend server of ResQ",
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
-		"dev": "node --watch server.js"
+		"dev": "nodemon server.js"
 	},
 	"repository": {
 		"type": "git",
@@ -30,6 +30,7 @@
 		"https": "^1.0.0",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^7.6.3",
+		"nodemon": "^3.0.2",
 		"socket.io": "^4.7.2"
 	}
 }
