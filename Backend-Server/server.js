@@ -11,15 +11,16 @@ require('dotenv').config({
 });
 const express = require('express');
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const cors = require('cors');
-const socketIO = require('socket.io');
+const webSockets = require("./WebSockets");
 const db = require("./Application/DB_Models");
 const middleware = require("./Application/Middleware/middleware.js");
 
 const app = express();
 
-var corsOptions = {
+let corsOptions = {
     origin: 'http://localhost:8081'
 };
 
@@ -34,7 +35,7 @@ app.use(express.urlencoded({
 }));
 
 // Middleware to verify client token for all requests
-app.use(middleware.decodeToken);
+// app.use(middleware.decodeToken);
 
 // Connecting to database
 db.mongoose
@@ -67,43 +68,48 @@ app.use((req, res) => {
 });
 
 //setting up ssl
-const cred = {
-    key: fs.readFileSync(process.env.SSL_KEY_PATH),
-    cert: fs.readFileSync(process.env.SSL_CERT_PATH)
-};
+// const cred = {
+//     key: fs.readFileSync(process.env.SSL_KEY_PATH),
+//     cert: fs.readFileSync(process.env.SSL_CERT_PATH)
+// };
 
 //setting port
 const PORT = process.env.PORT || 8080;
 
 // Starting the server
-// const server = https(cred,app).listen(PORT, () => {
-const server = app.listen(PORT, () => {
+// const server = https.createServer(cred,app).listen(PORT, () => {
+const server = http.createServer(app).listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
 //socket.io
-const io = socketIO(server);
+// const io = socketIO(server);
+webSockets.forEach(socket => new socket(server));
 
-io.on('connection', socket => {
-    socket.on('updateLocation', (locationData, room) => {
-        app.post('/api/locationLog', locationData);
-        if (room == '') {
-            socket.broadcast.emit('newLocation', locationData);
-        } else {
-            socket.to(room).emit('newLocation', locationData);
-        }
-    });
-    socket.on('joinRoom', room => {
-        socket.join(room);
-    });
-    socket.on('leaveRoom', room => {
-        socket.leave(room);
-    });
-    socket.on('disconnect', (lastLocationData) => {
-        socket.leaveAll();
-        app.post('/api/locationLog', lastLocationData);
-    });
-    socket.on(error => {
-        console.log(error);
-    })
-});
+// io.on('connection', socket => {
+//     socket.on('updateLocation', (locationData, room) => {
+//         app.post('/api/locationLog', locationData);
+//         if (room == '') {
+//             socket.broadcast.emit('newLocation', locationData);
+//         } else {
+//             socket.to(room).emit('newLocation', locationData);
+//         }
+//     });
+//     socket.on('joinRoom', room => {
+//         socket.join(room);
+//         let locationData=[];
+//         socket.in(room).sockets.forEach(element => {
+            
+//         })
+//     });
+//     socket.on('leaveRoom', room => {
+//         socket.leave(room);
+//     });
+//     socket.on('disconnect', (lastLocationData) => {
+//         socket.leaveAll();
+//         app.post('/api/locationLog', lastLocationData);
+//     });
+//     socket.on(error => {
+//         console.log(error);
+//     })
+// });
