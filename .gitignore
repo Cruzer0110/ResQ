@@ -7,3 +7,10 @@ serviceaccountkey.json
 
 # Node modules
 node_modules/
+
+# Firebase Emulator Data
+.firebaserc
+firebase.json
+
+# Logs
+*.log
