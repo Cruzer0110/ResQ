@@ -13,11 +13,6 @@ class Middleware {
                         message: 'Invalid token',
                         token: token
                     });
-                })
-                .catch(authError => {
-                    res.status(500).send({
-                        message: 'Server error. Please try again later.'
-                    });
                 });
         } catch (error) {
             console.log(error);
@@ -26,6 +21,27 @@ class Middleware {
             });
         }
     };
+    decodeTokenForSocket(token) {
+        try {
+            admin
+                .auth()
+                .verifyIdToken(token)
+                .then(validToken => {
+                    return {
+                        isValid: true,
+                        uid: validToken.uid
+                    };
+                }, invalidToken => {
+                    return {
+                        isValid: false,
+                        uid: null
+                    }
+                });
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+    }
 };
 
 module.exports = new Middleware();
