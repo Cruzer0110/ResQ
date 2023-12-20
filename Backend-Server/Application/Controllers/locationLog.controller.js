@@ -26,7 +26,7 @@ exports.create = (req, res) => {
 
     // Save log in the database
     locationLog
-        .save(locationLog)
+        .save()
         .then(data => {
             res.send(data);
         }, err => {
@@ -37,60 +37,60 @@ exports.create = (req, res) => {
 };
 
 // Retrieve logs of a user from database for generating current location
-exports.getByID = (req,res) => {
+exports.getByID = (req, res) => {
     const id = req.params.id;
 
     LocationLog
-        .find({userID: id})
-        .sort({timestamp: -1})
-        .limit(5)
+        .find({ userID: id })
+        .sort({ timestamp: -1 })
+        .limit(1)
         .then(data => {
             res.status(200).send(data);
         },
-        err => {
-            res.status(500).send({
-                message: "Internal Server Error!"
+            err => {
+                res.status(500).send({
+                    message: "Internal Server Error!"
+                });
             });
-        });
 };
 
 // Retrieve logs of a user from database to generate location history
 
-exports.getHistory = (req,res) => {
+exports.getHistory = (req, res) => {
     const id = req.params.id;
 
     LocationLog
-        .find({userID: id})
-        .sort({timestamp: -1})
+        .find({ userID: id })
+        .sort({ timestamp: -1 })
         .then(data => {
             res.status(200).send(data);
         },
-        err => {
-            res.status(500).send({
-                message: "Internal Server Error!"
+            err => {
+                res.status(500).send({
+                    message: "Internal Server Error!"
+                });
             });
-        });
 }
 
 // Retrieve logs of all users from database to generate heat map data
 
-exports.getAll = (req,res) => {
+exports.getAll = (req, res) => {
     LocationLog
         .find()
-        .sort({timestamp: -1})
+        .sort({ timestamp: -1 })
         .then(data => {
             res.status(200).send(data);
         },
-        err => {
-            res.status(500).send({
-                message: "Internal Server Error!"
+            err => {
+                res.status(500).send({
+                    message: "Internal Server Error!"
+                });
             });
-        });
 }
 
 // Retrieve location data in a certain radius for agencies to see events in their area
 
-exports.getRadius = (req,res) => {
+exports.getRadius = (req, res) => {
     const lat = req.params.lat;
     const long = req.params.long;
     const radius = req.params.radius;
@@ -110,11 +110,11 @@ exports.getRadius = (req,res) => {
         .then(data => {
             res.status(200).send(data);
         },
-        err => {
-            res.status(500).send({
-                message: "Internal Server Error!"
+            err => {
+                res.status(500).send({
+                    message: "Internal Server Error!"
+                });
             });
-        });
 }
 
 // Update a log identified by the logID in the request
@@ -149,7 +149,7 @@ exports.deleteAll = (req, res) => {
     const id = req.params.id;
 
     LocationLog
-        .deleteMany({userID: id})
+        .deleteMany({ userID: id })
         .then(data => {
             res.send({
                 message: `${data.deletedCount} logs were deleted successfully!`
@@ -174,13 +174,13 @@ exports.filterByDateTimeRange = (req, res) => {
             userID: id,
             timestamp: { $gte: date + "T" + time1, $lte: date + "T" + time2 }
         })
-        .sort({timestamp: -1})
+        .sort({ timestamp: -1 })
         .then(data => {
             res.status(200).send(data);
         },
-        err => {
-            res.status(500).send({
-                message: "Internal Server Error!"
+            err => {
+                res.status(500).send({
+                    message: "Internal Server Error!"
+                });
             });
-        });
 }

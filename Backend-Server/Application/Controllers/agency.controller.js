@@ -34,7 +34,7 @@ exports.create = (req, res) => {
 
     //Save Agency in the database
     agency
-        .save(agency)
+        .save()
         .then(data => {
             res.send(data);
         }, _err => {
