@@ -56,7 +56,7 @@ const agencySchema = mongoose.Schema(
     { timestamps: true }
 );
 
-agencySchema.method("toJSON", () => {
+agencySchema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;

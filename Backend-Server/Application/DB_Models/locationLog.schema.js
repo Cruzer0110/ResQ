@@ -31,7 +31,7 @@ const locationLogSchema = mongoose.Schema(
     }
 );
 
-locationLogSchema.method("toJSON", () => {
+locationLogSchema.method("toJSON", function () {
     const { __v, ...object } = this.toObject();
     return object;
 });
