@@ -3,25 +3,25 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema(
     {
+        firebaseID: {
+            type: String,
+            required: [true, "Unique firebase ID is required"],
+            unique: true
+        },
         name: {
             type: String,
             required: [true, "Name is required"],
             unique: false
-        },
-        email: {
-            type: String,
-            required: [true, "Unique email id is required"],
-            unique: true
         },
         contact: {
             type: Number,
             required: [true, "Unique phone number is required"],
             unique: true
         },
-        password: {
+        email: {
             type: String,
-            required: [true, "Password is required"],
-            unique: false
+            required: [true, "Unique email id is required"],
+            unique: true
         },
         address: {
             street: {
@@ -30,15 +30,15 @@ const userSchema = mongoose.Schema(
             },
             city: {
                 type: String,
-                required: false
+                required: true
             },
             state: {
                 type: String,
-                required: false
+                required: true
             },
             pin: {
                 type: Number,
-                required: false
+                required: true
             }
         },
         role: {
@@ -48,6 +48,7 @@ const userSchema = mongoose.Schema(
         },
         agency: {
             type: String,
+            ref: 'agency',
             required: () => this.role === 'agency'
         }
     },
