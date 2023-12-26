@@ -6,12 +6,22 @@
  *  
  *  Author: Cruzer0110
 */
+require('dotenv').config({
+    path: `${__dirname}/Application/Server_Config/.env`
+});
 const express = require('express');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 const cors = require('cors');
+const webSockets = require("./WebSockets");
+const routes = require("./Application/Routes");
+const db = require("./Application/DB_Models");
+const middleware = require("./Application/Middleware/middleware.js");
 
 const app = express();
 
-var corsOptions = {
+let corsOptions = {
     origin: 'http://localhost:8081'
 };
 
@@ -25,8 +35,16 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-//connecting to database
-const db = require("./Application/DB_Models");
+// Global middlewares applied before all HTTPS requests
+{
+    // Middleware to verify client token for all requests
+    app.use(middleware.decodeToken);
+
+    // Middleware to automatically create record of an user if it does not exist
+    app.use(require("./Application/Controllers/user.controller.js").autoCreateUser);
+}
+
+// Connecting to database
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
@@ -34,20 +52,17 @@ db.mongoose
     })
     .then(() => {
         console.log("Connected to database!");
-    })
-    .catch(err => {
+    }, err => {
         console.log("Cannot connect to database!\n", err);
         process.exit();
     });
 
 //Main route
-app.get('/',(req,res) => {
-    res.json({message: "Welcome to the backend server"});
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to the backend server" });
 });
 
 //Api routes
-const routes = [require("./Application/Routes/agency.routes.js"),require("./Application/Routes/user.routes.js")];
-
 routes.forEach(element => {
     element(app);
 });
@@ -57,9 +72,20 @@ app.use((req, res) => {
     res.status(404).send({ message: "Invalid route request!" });
 });
 
+//setting up ssl
+// const cred = {
+//     key: fs.readFileSync(process.env.SSL_KEY_PATH),
+//     cert: fs.readFileSync(process.env.SSL_CERT_PATH)
+// };
+
 //setting port
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
+// Starting the server
+// const server = https.createServer(cred,app).listen(PORT, () => {
+const server = http.createServer(app).listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+//socket.io
+webSockets.forEach(socket => new socket(server));

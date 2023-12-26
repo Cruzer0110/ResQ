@@ -8,12 +8,11 @@ const Agency = db.agencies;
 // Create and Save a new Agency
 exports.create = (req, res) => {
     //Validate request
-    if (!req.body.name) {
-        res.status(400).send({ 
-            message: 'Enter a value in "Name" field!' 
+    if (!(req.body.name && req.body.type && req.body.contact && req.body.address.street && req.body.address.city && req.body.address.state && req.body.address.pin)) {
+        return res.status(400).send({
+            message: "Content cannot be empty!"
         });
-        return;
-    };
+    }
 
     //Create an Agency
     const agency = new Agency({
@@ -27,47 +26,67 @@ exports.create = (req, res) => {
             state: req.body.address.state,
             pin: req.body.address.pin
         },
-        //Fetch location from Google Maps API
+        location: {
+            type: req.body.location.type,
+            coordinates: req.body.location.coordinates
+        }
     });
 
     //Save Agency in the database
     agency
-        .save(agency)
+        .save()
         .then(data => {
             res.send(data);
-        })
-        .catch(err => {
+        }, _err => {
             res.status(500).send({
-                message: err.message || "Some error occured while creating the Agency."
+                message: "Some error occured while creating the Agency."
             });
         });
 };
 
 
 // Retrieve all Agencies from the database
-exports.getAll = (req, res) => {
-    let condition = {};
-
-    Agency.find(condition)
+exports.getAll = (_req, res) => {
+    Agency
+        .find()
         .then(data => {
             res.send(data);
-        })
-        .catch(err => {
+        }, _err => {
             res.status(500)
                 .send({
-                    message: err.message || "Some error occured while retrieving Agencies."
+                    message: "Some error occured while retrieving Agencies."
                 });
         });
 };
 
-// Retrieve all Agencies from the database in the given location
+
+// Retrieve all agencies in a particular location radius for maps
 exports.getAllByLocation = (req, res) => {
-    /* 
-        Code for this method yet to be written
-        Currently, the way filter out location is not known...
-        
-    */
+    const lat = req.params.lat;
+    const long = req.params.long;
+    const radius = req.params.radius;
+
+    Agency
+        .find({
+            location: {
+                $near: {
+                    $maxDistance: radius,
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [long, lat]
+                    }
+                }
+            }
+        })
+        .then(data => {
+            res.status(200).send(data);
+        }, _err => {
+            res.status(500).send({
+                message: "Some error occured while retrieving Agencies."
+            });
+        })
 };
+
 
 // Find an Agency with the given ID
 exports.getOne = (req, res) => {
@@ -81,11 +100,10 @@ exports.getOne = (req, res) => {
                         message: "Agency with id = " + id + " not found!"
                     });
             else res.status(200).send(data);
-        })
-        .catch(err => {
+        }, err => {
             res.status(500)
                 .send({
-                    message: err.message || "Error retrieving Agency with id = " + id
+                    message: "Error retrieving Agency with id = " + id
                 });
         });
 };
@@ -115,8 +133,7 @@ exports.update = (req, res) => {
                     message: "Agency was successfully updated!"
                 });
             }
-        })
-        .catch(err => {
+        }, err => {
             res.status(500)
                 .send({
                     message: err.message || "Error updating Agency with id = " + id
@@ -142,8 +159,7 @@ exports.delete = (req, res) => {
                     message: "Agency was successfully deleted!"
                 });
             }
-        })
-        .catch(err => {
+        }, err => {
             res.status(500)
                 .send({
                     message: err.message || "Could not delete agency with id = " + id
@@ -153,7 +169,7 @@ exports.delete = (req, res) => {
 
 
 // Purge database
-exports.deleteAll = (req, res) => {
+exports.deleteAll = (_req, res) => {
     Agency.deleteMany({})
         .then(data => {
             res.send({

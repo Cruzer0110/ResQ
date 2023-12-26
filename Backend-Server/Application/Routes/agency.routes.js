@@ -10,7 +10,7 @@ module.exports = app => {
     router.get("/", agency.getAll);
 
     // Retrieve all Agencies in a given location
-    router.get("/location/:location", agency.getAllByLocation);
+    router.get("/location/:lat/:long/:radius", agency.getAllByLocation);
 
     // Retrieve a single Agency with id
     router.get("/:id", agency.getOne);

@@ -1,26 +1,27 @@
+// Used for creating the schema for the user collection in the database
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema(
     {
+        firebaseID: {
+            type: String,
+            required: [true, "Unique firebase ID is required"],
+            unique: true
+        },
         name: {
             type: String,
-            required: true,
+            required: [true, "Name is required"],
             unique: false
-        },
-        email: {
-            type: String,
-            required: false,
-            unique: true
         },
         contact: {
             type: Number,
-            required: true,
+            required: [true, "Unique phone number is required"],
             unique: true
         },
-        password: {
+        email: {
             type: String,
-            required: true,
-            unique: false
+            required: [true, "Unique email id is required"],
+            unique: true
         },
         address: {
             street: {
@@ -29,34 +30,26 @@ const userSchema = mongoose.Schema(
             },
             city: {
                 type: String,
-                required: false
+                required: true
             },
             state: {
                 type: String,
-                required: false
+                required: true
             },
             pin: {
                 type: Number,
-                required: false
+                required: true
             }
-        },
-        location: {
-            latitude: {
-                type: String,
-                required: false
-            },
-            longitude: {
-                type: String,
-                required: false
-            },
         },
         role: {
             type: String,
+            enum: ['user', 'admin', 'agency'],
             required: true
         },
         agency: {
             type: String,
-            required: false
+            ref: 'agency',
+            required: () => this.role === 'agency'
         }
     },
     { timestamps: true }
