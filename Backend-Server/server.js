@@ -35,8 +35,14 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-// Middleware to verify client token for all requests
-app.use(middleware.decodeToken);
+// Global middlewares applied before all HTTPS requests
+{
+    // Middleware to verify client token for all requests
+    app.use(middleware.decodeToken);
+
+    // Middleware to automatically create record of an user if it does not exist
+    app.use(require("./Application/Controllers/user.controller.js").autoCreateUser);
+}
 
 // Connecting to database
 db.mongoose
